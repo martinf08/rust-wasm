@@ -16,6 +16,7 @@ pub fn main_js() -> Result<(), JsValue> {
 
 #[wasm_bindgen]
 #[repr(u8)]
+#[derive(PartialEq, Eq, Copy, Clone)]
 pub enum Cell {
     Empty = 0,
     Fill = 1,
@@ -37,15 +38,27 @@ impl Grid {
 #[wasm_bindgen]
 impl Grid {
     pub fn new() -> Grid {
-        let width: u32 = 64;
-        let height: u32 = 64;
+        let width: u32 = 16;
+        let height: u32 = 16;
 
+        let mut grid = Grid {
+            width,
+            height,
+            cells: Vec::new(),
+        };
+
+        grid.tick();
+
+        grid
+    }
+
+    pub fn tick(&mut self) {
         let generate_random = |min, max| -> usize {
             Math::floor(Math::random() * (max - min + 1) as f64 + min as f64) as usize
         };
 
-        let random = generate_random(0, width * height);
-        let cells = (0..width * height)
+        let random = generate_random(0, self.width * self.height);
+        self.cells = (0..self.width * self.height)
             .map(|i| {
                 if random as u32 == i {
                     Cell::Fill
@@ -54,11 +67,17 @@ impl Grid {
                 }
             })
             .collect();
+    }
 
-        Grid {
-            width,
-            height,
-            cells,
-        }
+    pub fn width(&self) -> u32 {
+        self.width
+    }
+
+    pub fn height(&self) -> u32 {
+        self.height
+    }
+
+    pub fn cells(&self) -> *const Cell {
+        self.cells.as_ptr()
     }
 }
