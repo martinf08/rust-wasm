@@ -5,6 +5,11 @@ use js_sys::Math;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
+macro_rules! log {
+    ( $( $t:tt )* ) => {
+        web_sys::console::log_1(&format!( $( $t )* ).into());
+    }
+}
 
 #[wasm_bindgen(start)]
 pub fn main_js() -> Result<(), JsValue> {
@@ -16,10 +21,19 @@ pub fn main_js() -> Result<(), JsValue> {
 
 #[wasm_bindgen]
 #[repr(u8)]
-#[derive(PartialEq, Eq, Copy, Clone)]
+#[derive(Debug, PartialEq, Eq, Copy, Clone)]
 pub enum Cell {
     Empty = 0,
     Fill = 1,
+}
+
+impl Cell {
+    fn is_fill(&self) -> bool {
+        return match *self {
+            Cell::Fill => true,
+            _ => false,
+        }
+    }
 }
 
 #[wasm_bindgen]
@@ -46,8 +60,6 @@ impl Grid {
             height,
             cells: Vec::new(),
         };
-
-        grid.tick();
 
         grid
     }
@@ -79,5 +91,10 @@ impl Grid {
 
     pub fn cells(&self) -> *const Cell {
         self.cells.as_ptr()
+    }
+
+    pub fn get_state(&mut self, row: u32, col: u32) -> bool {
+        let idx = self.get_index(row, col);
+        self.cells[idx].is_fill()
     }
 }

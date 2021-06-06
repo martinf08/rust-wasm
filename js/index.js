@@ -1,7 +1,6 @@
 const rust = import('../pkg/index');
 const wasm = import('../pkg/index_bg.wasm')
 
-let FRAMES_PER_SECOND = 5
 const CELL_SIZE = 30;
 const GRID_COLOR = "#000000";
 const EMPTY_COLOR = "#ffffff";
@@ -77,16 +76,29 @@ const FILL_COLOR = "#F20505";
         ctx.stroke()
     }
 
-
     const renderLoop = () => {
-        setTimeout(() => {
-            drawGrid();
-            drawCells();
+        grid.tick();
 
-            grid.tick()
-            requestAnimationFrame(renderLoop)
-        }, 1000 / FRAMES_PER_SECOND)
+        drawGrid();
+        drawCells();
+
+        const animationId = requestAnimationFrame(renderLoop)
+        cancelAnimationFrame(animationId)
     }
+
+    canvas.addEventListener('click', event => {
+        const boundingRect = canvas.getBoundingClientRect();
+
+        const canvasLeft = (event.clientX - boundingRect.left)
+        const canvasTop = (event.clientY - boundingRect.top)
+
+        const row = Math.min(Math.floor(canvasTop / (CELL_SIZE + 1)), height - 1)
+        const col = Math.min(Math.floor(canvasLeft / (CELL_SIZE + 1)), width - 1)
+
+        if (grid.get_state(row, col)) {
+            requestAnimationFrame(renderLoop)
+        }
+    })
 
     requestAnimationFrame(renderLoop)
 })()
