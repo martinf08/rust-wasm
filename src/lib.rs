@@ -1,23 +1,15 @@
 use wasm_bindgen::prelude::*;
 use js_sys::Math;
 
-#[cfg(feature = "wee_alloc")]
-#[global_allocator]
-static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
-
 macro_rules! log {
     ( $( $t:tt )* ) => {
         web_sys::console::log_1(&format!( $( $t )* ).into());
     }
 }
 
-#[wasm_bindgen(start)]
-pub fn main_js() -> Result<(), JsValue> {
-    #[cfg(debug_assertions)]
-        console_error_panic_hook::set_once();
-
-    Ok(())
-}
+#[cfg(feature = "wee_alloc")]
+#[global_allocator]
+static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen]
 #[repr(u8)]
@@ -55,13 +47,11 @@ impl Grid {
         let width: u32 = 16;
         let height: u32 = 16;
 
-        let mut grid = Grid {
+        Grid {
             width,
             height,
             cells: Vec::new(),
-        };
-
-        grid
+        }
     }
 
     pub fn tick(&mut self) {
@@ -93,7 +83,7 @@ impl Grid {
         self.cells.as_ptr()
     }
 
-    pub fn get_state(&mut self, row: u32, col: u32) -> bool {
+    pub fn is_hitted(&self, row: u32, col: u32) -> bool {
         let idx = self.get_index(row, col);
         self.cells[idx].is_fill()
     }

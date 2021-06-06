@@ -95,7 +95,7 @@ const FILL_COLOR = "#F20505";
         const row = Math.min(Math.floor(canvasTop / (CELL_SIZE + 1)), height - 1)
         const col = Math.min(Math.floor(canvasLeft / (CELL_SIZE + 1)), width - 1)
 
-        if (grid.get_state(row, col)) {
+        if (grid.is_hitted(row, col)) {
             requestAnimationFrame(renderLoop)
         }
     })
