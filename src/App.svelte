@@ -110,4 +110,19 @@
 
 </script>
 
+<style>
+    :global(body) {
+        background-color: #161923;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
 <canvas id="app"></canvas>
