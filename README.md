@@ -1,2 +1,4 @@
 # rust-wasm
-<code>npm run start</code>
+- <code>cargo install cargo-watch</code>
+- <code>npm run build</code>
+- <code>npm run start</code>
